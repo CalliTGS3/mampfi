@@ -7,9 +7,29 @@ let LichtGrenzwert = 100
 let UnterbrechungStart = 0
 let UnterbrechungZaehlerEinwurf = 0
 let UnterbrechungZaehlerLeeren = 0
-serial.redirectToUSB()
-let AnzahlTracks = 10
+basic.showString("I")
+basic.pause(500)
+grove_mp3_v3.initMP3(SerialPin.C17, SerialPin.C16, BaudRate.BaudRate9600)
+let AnzahlTracks = grove_mp3_v3.queryNumberOfTracks()
+basic.showNumber(AnzahlTracks)
+basic.pause(500)
 basic.showString("S")
+basic.forever(function () {
+    if (UnterbrechungZaehlerEinwurf > 0) {
+        UnterbrechungZaehlerEinwurf = 0
+        basic.showString("E")
+        grove_mp3_v3.playTrackByName(randint(2, AnzahlTracks))
+    } else if (UnterbrechungZaehlerLeeren > 0) {
+        UnterbrechungZaehlerLeeren = 0
+        basic.showString("L")
+        if (0 % 100 == 1) {
+            grove_mp3_v3.playTrackByName(1)
+        }
+    } else {
+        basic.showIcon(IconNames.Happy)
+    }
+    basic.pause(10)
+})
 // grove_mp3_v3.queryNumberOfTracks()
 basic.forever(function () {
     IRLichtstaerke = pins.analogReadPin(AnalogPin.P1)
@@ -33,22 +53,6 @@ basic.forever(function () {
     } else {
         UnterbrechungStart = 0
         UnterbrechungEnde = 0
-    }
-    basic.pause(10)
-})
-basic.forever(function () {
-    if (UnterbrechungZaehlerEinwurf > 0) {
-        UnterbrechungZaehlerEinwurf = 0
-        basic.showString("E")
-        grove_mp3_v3.playTrackByName(randint(2, AnzahlTracks))
-    } else if (UnterbrechungZaehlerLeeren > 0) {
-        UnterbrechungZaehlerLeeren = 0
-        basic.showString("L")
-        if (0 % 100 == 1) {
-            grove_mp3_v3.playTrackByName(1)
-        }
-    } else {
-        basic.showIcon(IconNames.Happy)
     }
     basic.pause(10)
 })

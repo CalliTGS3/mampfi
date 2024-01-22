@@ -130,16 +130,12 @@ namespace grove_mp3_v3 {
     }
 
     //% blockId="queryNumberOfTracks" block="Ermittle Anzahl Tracks"
-    export function queryNumberOfTracks():number {
-
+    export function queryNumberOfTracks(): number {
         let hexArray: string[] = ["0x03", "0xC5"];
         writeBuffer(hexArray);
-
-        let numberOfTracks = serial.readLine();
-
-        let numTr = parseInt(numberOfTracks);
-
-        return numTr;
+        let bufr = serial.readBuffer(3);
+        let num = bufr.getNumber(NumberFormat.UInt16BE, 1)
+        return num;
     }
-
+    
 }
